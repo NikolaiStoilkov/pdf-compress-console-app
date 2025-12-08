@@ -1,4 +1,4 @@
-package main.java.org.pdfcompress.repository;
+package main.java.org.pdfcompress.classes;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
