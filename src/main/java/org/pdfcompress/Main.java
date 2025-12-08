@@ -13,7 +13,7 @@ public class Main {
 
             reader.read();
 
-            trailLocator.locateTrail();
+            trailLocator.locate();
 
             System.out.println(trailLocator.startXrefOffset);
 

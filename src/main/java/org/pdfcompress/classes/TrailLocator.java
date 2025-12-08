@@ -22,7 +22,7 @@ public class TrailLocator {
         this.randomAccessFile = randomAccessFile;
     }
 
-    public void locateTrail() throws IOException {
+    public void locate() throws IOException {
         setFileLength();
 
         setScanSize();
@@ -46,7 +46,6 @@ public class TrailLocator {
         } catch (NumberFormatException e) {
             throw new IOException("PDF format error: Could not parse startxref offset value: '" + offsetString + "'");
         }
-
     }
 
     private void setFileLength() throws IOException {
