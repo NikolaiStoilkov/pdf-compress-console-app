@@ -41,7 +41,6 @@ public class TrailLocator {
 
         setOffsetString();
 
-
         try {
             this.startXrefOffset = Long.parseLong(this.offsetString);
         } catch (NumberFormatException e) {
