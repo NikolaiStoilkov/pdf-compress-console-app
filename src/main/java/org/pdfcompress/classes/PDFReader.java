@@ -8,7 +8,7 @@ public class PDFReader {
     private final int DEFAULT_CHUNK_SIZE = 4096;
     private RandomAccessFile randomAccessFile;
     private int length;
-    private final byte[] buffer = new byte[length];
+    private byte[] buffer;
     private ByteArrayOutputStream outputStream;
     private int bytesRead;
     public static byte[] bytes;
@@ -28,6 +28,7 @@ public class PDFReader {
     public void read() throws IOException {
         outputStream = new ByteArrayOutputStream();
 
+        setBuffer();
         readChunk();
 
         while(bytesRead != -1){
@@ -39,6 +40,10 @@ public class PDFReader {
         bytes = outputStream.toByteArray();
 
         reverse(bytes);
+    }
+
+    private void setBuffer(){
+        this.buffer = new byte[this.length];
     }
 
     private void readChunk() throws IOException {

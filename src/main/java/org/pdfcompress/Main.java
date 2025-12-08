@@ -9,7 +9,7 @@ import java.io.RandomAccessFile;
 public class Main {
     public static void main(String[] args) throws IOException {
         try(RandomAccessFile randomAccessFile = new RandomAccessFile("test-pdf.pdf", "rw")){
-            PDFReader reader = new PDFReader(randomAccessFile, 100);
+            PDFReader reader = new PDFReader(randomAccessFile, 4096);
             TrailLocator trailLocator = new TrailLocator(randomAccessFile);
 
             reader.read();
