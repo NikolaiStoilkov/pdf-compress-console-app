@@ -3,11 +3,10 @@ package main.java.org.pdfcompress;
 import main.java.org.pdfcompress.classes.PDFReader;
 import main.java.org.pdfcompress.classes.TrailLocator;
 
-import java.io.IOException;
 import java.io.RandomAccessFile;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+     static void main(String[] args) {
         try(RandomAccessFile randomAccessFile = new RandomAccessFile("test-pdf.pdf", "rw")){
             PDFReader reader = new PDFReader(randomAccessFile, 4096);
             TrailLocator trailLocator = new TrailLocator(randomAccessFile);
