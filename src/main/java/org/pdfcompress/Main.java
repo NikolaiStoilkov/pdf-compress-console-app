@@ -19,9 +19,6 @@ public class Main {
             reader.read();
             trailLocator.locate();
 
-            System.out.println("PDF Reader bytes " + Arrays.toString(reader.bytes));
-            System.out.println("Read from here " + trailLocator.startXrefOffset); // Read from here
-
             // Reading cross-reference table
             xrefOffsetReader.praseTable(trailLocator.startXrefOffset);
 

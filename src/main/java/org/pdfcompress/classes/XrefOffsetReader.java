@@ -62,6 +62,11 @@ public class XrefOffsetReader {
 
                         parseOffset();
 
+
+                        if(isCompressed()){
+                            //TODO: something
+                        }
+
                         setObjectOffset();
                     }
 
@@ -133,5 +138,9 @@ public class XrefOffsetReader {
 
     private void incrementObjectId(){
         this.currentObjectId++;
+    }
+
+    private Boolean isCompressed(){
+        return Integer.parseInt(this.parts[0]) == 0 && Integer.parseInt(this.parts[1]) == 0;
     }
 }
