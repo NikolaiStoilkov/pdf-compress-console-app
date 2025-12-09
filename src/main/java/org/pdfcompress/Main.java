@@ -6,6 +6,7 @@ import main.java.org.pdfcompress.classes.TrailLocator;
 import main.java.org.pdfcompress.classes.XrefOffsetReader;
 
 import java.io.RandomAccessFile;
+import java.util.Arrays;
 
 public class Main {
      static void main(String[] args) {
@@ -18,12 +19,15 @@ public class Main {
             reader.read();
             trailLocator.locate();
 
-            System.out.println("Read from here" + trailLocator.startXrefOffset); // Read from here
+            System.out.println("PDF Reader bytes " + Arrays.toString(reader.bytes));
+            System.out.println("Read from here " + trailLocator.startXrefOffset); // Read from here
+
+            // Reading cross-reference table
+            xrefOffsetReader.praseTable(trailLocator.startXrefOffset);
 
 
 
 
-            byte[] allBytes = PDFReader.bytes;
         } catch (Exception e) {
             System.out.println("Error reading the file" + e);
         }

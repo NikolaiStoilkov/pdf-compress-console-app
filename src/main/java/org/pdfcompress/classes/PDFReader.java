@@ -11,7 +11,7 @@ public class PDFReader {
     private byte[] buffer;
     private ByteArrayOutputStream outputStream;
     private int bytesRead;
-    public static byte[] bytes;
+    public byte[] bytes;
 
     public PDFReader(){}
 
