@@ -36,6 +36,17 @@ public class XrefOffsetReader {
 
             while (true) {
                 readHeaderLine();
+                //Here i am facing the problem. i have to read the file
+                // backwards so i can access
+                // those lines "0000147086 00000 n
+                //0000173213 00000 n
+                //0000176286 00000 n
+                //0000176332 00000 n
+                //trailer
+                //<</Size 198/Root 1 0 R/Info 49 0 R/ID[<754963A46EED8B45B944136AE609A06F><754963A46EED8B45B944136AE609A06F>] >>
+                //startxref"
+                // The solution for this is createiing input stream class that can reverse the stream
+                // and reading ith normally
 
                 // Skipping empty lines
                 while (this.headerLine != null && this.headerLine.trim().isEmpty()) {
@@ -50,7 +61,7 @@ public class XrefOffsetReader {
                 setCurrentObjectId();
                 setCount();
 
-                for (int i = 0; i < this.count; i++) {
+                for (int i = 0; i < this.count + 20; i++) {
                     readEntryLine();
 
                     if (this.entryLine == null) {
