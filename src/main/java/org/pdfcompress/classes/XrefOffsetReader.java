@@ -1,7 +1,7 @@
-package main.java.org.pdfcompress.classes;
+package org.pdfcompress.classes;
 
-import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.HashMap;
 import java.util.Map;
 
 public class XrefOffsetReader {
@@ -24,36 +24,31 @@ public class XrefOffsetReader {
         this.randomAccessFile = randomAccessFile;
     }
 
-    public  Map<Integer, Long> praseTable(long startXrefOffset) {
+    public Map<Integer, Long> parseTable(long startXrefOffset) {
+        this.objectOffsets = new HashMap<>();
+
         try {
             seekFromIndex(startXrefOffset);
 
             readLine();
 
             if (this.line == null || !this.line.trim().equals("xref")) {
-                throw new IOException("This simple parser cannot read it.");
+                return this.objectOffsets;
             }
 
-            while (true) {
-                readHeaderLine();
-                //Here i am facing the problem. i have to read the file
-                // backwards so i can access
-                // those lines "0000147086 00000 n
-                //0000173213 00000 n
-                //0000176286 00000 n
-                //0000176332 00000 n
-                //trailer
-                //<</Size 198/Root 1 0 R/Info 49 0 R/ID[<754963A46EED8B45B944136AE609A06F><754963A46EED8B45B944136AE609A06F>] >>
-                //startxref"
-                // The solution for this is createiing input stream class that can reverse the stream
-                // and reading ith normally
+            readHeaderLine();
 
-                // Skipping empty lines
-                while (this.headerLine != null && this.headerLine.trim().isEmpty()) {
+            while (this.headerLine != null) {
+                if (this.headerLine.trim().isEmpty()) {
                     readHeaderLine();
+                    continue;
                 }
 
-                if (this.headerLine == null || this.headerLine.trim().startsWith("trailer")) {
+                if (this.headerLine.trim().startsWith("trailer")) {
+                    break;
+                }
+
+                if (!isSubsectionHeader()) {
                     break;
                 }
 
@@ -61,34 +56,29 @@ public class XrefOffsetReader {
                 setCurrentObjectId();
                 setCount();
 
-                for (int i = 0; i < this.count + 20; i++) {
+                for (int i = 0; i < this.count; i++) {
                     readEntryLine();
 
                     if (this.entryLine == null) {
                         break;
                     }
 
-                    if (this.entryLine.endsWith("n") && this.entryLine.contains(" n")) {
+                    if (isInUseEntry()) {
                         setOffsetString();
-
                         parseOffset();
-
-
-                        if(isCompressed()){
-                            //TODO: something
-                        }
-
                         setObjectOffset();
                     }
 
                     incrementObjectId();
                 }
+
+                readHeaderLine();
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        return objectOffsets;
+        return this.objectOffsets;
     }
 
     private void seekFromIndex(long startXrefOffset) {
@@ -115,6 +105,25 @@ public class XrefOffsetReader {
         }
     }
 
+    private boolean isSubsectionHeader() {
+        String[] tokens = this.headerLine.trim().split("\\s+");
+
+        if (tokens.length != 2) {
+            return false;
+        }
+
+        return isNumeric(tokens[0]) && isNumeric(tokens[1]);
+    }
+
+    private boolean isNumeric(String value) {
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
     private void setParts() {
         this.parts = this.headerLine.trim().split("\\s+");
     }
@@ -124,7 +133,7 @@ public class XrefOffsetReader {
     }
 
     private void setCount() {
-        this.count = Integer.parseInt(parts[1]);
+        this.count = Integer.parseInt(this.parts[1]);
     }
 
     private void readEntryLine() {
@@ -135,23 +144,23 @@ public class XrefOffsetReader {
         }
     }
 
-    private void setOffsetString(){
-        this.offsetString = this.entryLine.substring(0,10);
+    private boolean isInUseEntry() {
+        return this.entryLine.trim().endsWith("n") && this.entryLine.trim().length() >= 18;
     }
 
-    private void parseOffset(){
+    private void setOffsetString() {
+        this.offsetString = this.entryLine.trim().substring(0, 10);
+    }
+
+    private void parseOffset() {
         this.parsedOffset = Long.parseLong(this.offsetString);
     }
 
-    private void setObjectOffset(){
+    private void setObjectOffset() {
         this.objectOffsets.put(this.currentObjectId, this.parsedOffset);
     }
 
-    private void incrementObjectId(){
+    private void incrementObjectId() {
         this.currentObjectId++;
-    }
-
-    private Boolean isCompressed(){
-        return Integer.parseInt(this.parts[0]) == 0 && Integer.parseInt(this.parts[1]) == 0;
     }
 }

@@ -1,4 +1,4 @@
-package main.java.org.pdfcompress.classes;
+package org.pdfcompress.classes;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;

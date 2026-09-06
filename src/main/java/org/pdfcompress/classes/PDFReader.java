@@ -1,4 +1,4 @@
-package main.java.org.pdfcompress.classes;
+package org.pdfcompress.classes;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -38,8 +38,6 @@ public class PDFReader {
         }
 
         bytes = outputStream.toByteArray();
-
-        reverse(bytes);
     }
 
     private void setBuffer(){
@@ -48,24 +46,5 @@ public class PDFReader {
 
     private void readChunk() throws IOException {
         bytesRead = randomAccessFile.read(buffer);
-    }
-
-    private void reverse(byte[] array) {
-        if (array == null) return;
-
-        int i = 0;
-        int j = array.length - 1;
-        byte temp;
-
-        // Move from both ends towards the middle
-        while (i < j) {
-            // Swap
-            temp = array[i];
-            array[i] = array[j];
-            array[j] = temp;
-
-            i++;
-            j--;
-        }
     }
 }
